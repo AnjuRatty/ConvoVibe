@@ -1,0 +1,12 @@
+{
+  "name": "ConvoVibe",
+  "version": "0.0.1",
+  "description": "Realtime Communication for Deafblind Individuals",
+  "scripts": {
+    "start": "serve"
+  },
+  "dependencies": {
+    "serve": "^10.0.1"
+  },
+  "author": "Anjula Ratnayaka"
+}

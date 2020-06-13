@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      description="Communication Application for the Deafblind"
+      content="width=device-width, initial-scale=1"
+    />
+
+    <title>ConvoVibe</title>
+    <link rel="shortcut icon" href="#" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="css/morse-code-input.css" />
+    <link rel="stylesheet" href="css/custom.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script
+      src="https://kit.fontawesome.com/3a8223eb1c.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="js/HapticOutput.js"></script>
+    <script src="js/VoiceRecognition.js"></script>
+    <script src="js/MorseInput.js"></script>
+  </head>
+
+  <body>
+    <transcript></transcript>
+    <h3 class="text-muted pull-left">ConvoVibe</h3>
+    <i
+      id="editBtn"
+      class="fas fa-cog fa-2x"
+      class="pull-right"
+      style="margin-left: 230px;"
+    ></i>
+    <div
+      class="btn-group"
+      style="width: 100%; margin-left: 1px; height: 200px;"
+      role="group"
+      aria-label="Basic example"
+    >
+      <button
+        type="button"
+        class="btn btn-secondary"
+        style="width: 20%; height: 100%; background-color: darkslategrey;"
+        id="leftBtn"
+      >
+        Left
+      </button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        style="width: 60%; height: 100%; background-color: darkslategrey;"
+        id="middleBtn"
+      >
+        Middle
+      </button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        style="width: 20%; height: 100%; background-color: darkslategrey;"
+        id="rightBtn"
+      >
+        Right
+      </button>
+    </div>
+
+    <form>
+      <div class="form-group">
+        <button class="block" id="inputMorse">Tap for Morse Input</button>
+      </div>
+    </form>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Customize Quick Phrases</p>
+        <form>
+          Left Button:<br />
+          First Callout:
+          <input type="text" name="1a" id="1a" style="color: black;" /><br />
+          Second Callout:
+          <input type="text" name="1b" id="1b" style="color: black;" /><br />
+          Third Callout:
+          <input
+            type="text"
+            name="1c"
+            id="1c"
+            style="color: black;"
+          /><br /><br />
+
+          Middle Button:<br />
+          First Callout:
+          <input type="text" name="2a" id="2a" style="color: black;" /><br />
+          Second Callout:
+          <input type="text" name="2b" id="2b" style="color: black;" /><br />
+          Third Callout:
+          <input
+            type="text"
+            name="2c"
+            id="2c"
+            style="color: black;"
+          /><br /><br />
+
+          Right Button:<br />
+          First Callout:
+          <input type="text" name="3a" id="3a" style="color: black;" /><br />
+          Second Callout:
+          <input type="text" name="3b" id="3b" style="color: black;" /><br />
+          Third Callout:
+          <input
+            type="text"
+            name="3c"
+            id="3c"
+            style="color: black;"
+          /><br /><br />
+
+          <br />
+          <button
+            type="button"
+            class="btn btn-secondary"
+            style="background-color: green;"
+            id="savePhrasesBtn"
+          >
+            Save Phrases
+          </button>
+
+          <br /><br /><br />
+          Adjust Vibrotactile Speeds
+          <br />
+          dit :<br />
+          <input type="text" name="dit" id="dit" style="color: black;" /><br />
+          dah :<br />
+          <input type="text" name="dah" id="dah" style="color: black;" /><br />
+          wordspace :<br />
+          <input
+            type="text"
+            name="dah"
+            id="wordspace"
+            style="color: black;"
+          /><br />
+          letterspace :<br />
+          <input
+            type="text"
+            name="letterspace"
+            id="letterspace"
+            style="color: black;"
+          /><br />
+          <button
+            type="button"
+            class="btn btn-secondary"
+            style="background-color: green;"
+            id="saveSpeed"
+          >
+            Save Speeds</button
+          ><br />
+          <button
+            type="button"
+            class="btn btn-secondary"
+            style="background-color: green;"
+            id="resetSpeed"
+          >
+            Reset to Default
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        $("#inputMorse").morseCodeInput();
+
+        if (localStorage.getItem("1a") == null) {
+          localStorage.setItem("1a", "Left");
+        }
+        if (localStorage.getItem("2a") == null) {
+          localStorage.setItem("2a", "Middle");
+        }
+        if (localStorage.getItem("3a") == null) {
+          localStorage.setItem("3a", "Right");
+        }
+
+        $("#leftBtn").html(localStorage.getItem("1a"));
+        $("#middleBtn").html(localStorage.getItem("2a"));
+        $("#rightBtn").html(localStorage.getItem("3a"));
+        $("#savePhrasesBtn").click(function () {
+          localStorage.setItem("1a", $("#1a").val());
+          localStorage.setItem("1b", $("#1b").val());
+          localStorage.setItem("1c", $("#1c").val());
+
+          localStorage.setItem("2a", $("#2a").val());
+          localStorage.setItem("2b", $("#2b").val());
+          localStorage.setItem("2c", $("#2c").val());
+
+          localStorage.setItem("3a", $("#3a").val());
+          localStorage.setItem("3b", $("#3b").val());
+          localStorage.setItem("3c", $("#3c").val());
+          location.reload();
+        });
+
+        $("#saveSpeed").click(function () {
+          localStorage.setItem("dit", $("#dit").val());
+          localStorage.setItem("dah", $("#dah").val());
+          localStorage.setItem("wordspace", $("#wordspace").val());
+          localStorage.setItem("letterspace", $("#letterspace").val());
+          location.reload();
+        });
+
+        $("#resetSpeed").click(function () {
+          localStorage.setItem("dit", 65);
+          localStorage.setItem("dah", 195);
+          localStorage.setItem("wordspace", 455);
+          localStorage.setItem("letterspace", 195);
+          location.reload();
+        });
+      });
+
+      window.addEventListener("load", () => {
+        registerServiceWorker();
+      });
+
+      async function registerServiceWorker() {
+        if ("serviceWorker" in navigator) {
+          try {
+            await navigator.serviceWorker.register("./sw.js");
+          } catch (e) {
+            console.log("Service Worker registration failed");
+          }
+        }
+      }
+
+      // Get the modal
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("editBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on the button, open the modal
+      btn.onclick = function () {
+        modal.style.display = "block";
+        document.getElementById("1a").value = localStorage.getItem("1a");
+        document.getElementById("1b").value = localStorage.getItem("1b");
+        document.getElementById("1c").value = localStorage.getItem("1c");
+        document.getElementById("2a").value = localStorage.getItem("2a");
+        document.getElementById("2b").value = localStorage.getItem("2b");
+        document.getElementById("2c").value = localStorage.getItem("2c");
+        document.getElementById("3a").value = localStorage.getItem("3a");
+        document.getElementById("3b").value = localStorage.getItem("3b");
+        document.getElementById("3c").value = localStorage.getItem("3c");
+
+        if (localStorage.getItem("dit") == null) {
+          document.getElementById("dit").value = 65;
+        } else {
+          document.getElementById("dit").value = localStorage.getItem("dit");
+        }
+
+        if (localStorage.getItem("dah") == null) {
+          document.getElementById("dah").value = 195;
+        } else {
+          document.getElementById("dah").value = localStorage.getItem("dah");
+        }
+
+        if (localStorage.getItem("wordspace") == null) {
+          document.getElementById("wordspace").value = 455;
+        } else {
+          document.getElementById("wordspace").value = localStorage.getItem(
+            "wordspace"
+          );
+        }
+
+        if (localStorage.getItem("letterspace") == null) {
+          document.getElementById("letterspace").value = 195;
+        } else {
+          document.getElementById("letterspace").value = localStorage.getItem(
+            "letterspace"
+          );
+        }
+      };
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      var lefta = function () {
+          var msg = new SpeechSynthesisUtterance(localStorage.getItem("1a"));
+          window.speechSynthesis.speak(msg);
+        },
+        leftb = function () {
+          var msg = new SpeechSynthesisUtterance(localStorage.getItem("1b"));
+          window.speechSynthesis.speak(msg);
+        },
+        leftc = function () {
+          var msg = new SpeechSynthesisUtterance(localStorage.getItem("1c"));
+          window.speechSynthesis.speak(msg);
+        },
+        mida = function () {
+          var msg = new SpeechSynthesisUtterance(localStorage.getItem("2a"));
+          window.speechSynthesis.speak(msg);
+        },
+        midb = function () {
+          var msg = new SpeechSynthesisUtterance(localStorage.getItem("2b"));
+          window.speechSynthesis.speak(msg);
+        },
+        midc = function () {
+          var msg = new SpeechSynthesisUtterance(localStorage.getItem("2c"));
+          window.speechSynthesis.speak(msg);
+        },
+        righta = function () {
+          var msg = new SpeechSynthesisUtterance(localStorage.getItem("3a"));
+          window.speechSynthesis.speak(msg);
+        },
+        rightb = function () {
+          var msg = new SpeechSynthesisUtterance(localStorage.getItem("3b"));
+          window.speechSynthesis.speak(msg);
+        },
+        rightc = function () {
+          var msg = new SpeechSynthesisUtterance(localStorage.getItem("3c"));
+          window.speechSynthesis.speak(msg);
+        };
+
+      jQuery.fn.checkClick = function (
+        single_click_callback,
+        double_click_callback,
+        triple_click_callback,
+        timeout
+      ) {
+        return this.each(function () {
+          var clicks = 0,
+            self = this;
+          jQuery(this).click(function (event) {
+            clicks++;
+            if (clicks == 1) {
+              setTimeout(function () {
+                if (clicks == 1) {
+                  single_click_callback.call(self, event);
+                } else if (clicks == 2) {
+                  double_click_callback.call(self, event);
+                } else {
+                  triple_click_callback.call(self, event);
+                }
+                clicks = 0;
+              }, timeout || 500);
+            }
+          });
+        });
+      };
+
+      $("#leftBtn").checkClick(lefta, leftb, leftc);
+      $("#middleBtn").checkClick(mida, midb, midc);
+      $("#rightBtn").checkClick(righta, rightb, rightc);
+    </script>
+  </body>
+</html>
